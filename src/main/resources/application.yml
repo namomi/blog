@@ -13,13 +13,13 @@ spring:
       client:
         registration:
           google:
-            client-id:
-            client-secret: G
+            client-id: test_id
+            client-secret: test_secret
             scope:
               - email
               - profile
 
 jwt:
   issuer: test@test.com
-  secret_key:
+  secret_key: test_key
     
