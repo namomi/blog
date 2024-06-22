@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.security.Principal;
@@ -31,6 +32,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.namomi.blog.config.error.ErrorCode;
 import com.namomi.blog.domain.Article;
 import com.namomi.blog.domain.User;
 import com.namomi.blog.dto.AddArticleRequest;
@@ -197,6 +199,39 @@ class BlogApiControllerTest {
         List<Article> articles = blogRepository.findAll();
 
         assertThat(articles).isEmpty();
+    }
+
+
+    @Test
+    public void invalidHttpMethod() throws Exception{
+        //given
+        final String url = "/api/articles/{id}";
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post(url, 1));
+
+        //then
+        resultActions.andDo(print())
+            .andExpect(status().isMethodNotAllowed())
+            .andExpect(jsonPath("$.message").value(ErrorCode.METHOD_NOT_ALLOWED.getMessage()));
+
+    }
+
+    @Test
+    public void findArticleInvalidArticle() throws Exception{
+        //given
+        final String url = "/api/articles/{id}";
+        final long invalidId = 1;
+
+        //when
+        ResultActions resultActions = mockMvc.perform(get(url, invalidId));
+
+        //then
+        resultActions
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message").value(ErrorCode.ARTICLE_NOT_FOUND.getMessage()))
+            .andExpect(jsonPath("$.code").value(ErrorCode.ARTICLE_NOT_FOUND.getCode()));
     }
 
     private Article createDefaultArticle() {

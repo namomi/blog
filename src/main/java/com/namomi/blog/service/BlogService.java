@@ -2,7 +2,6 @@ package com.namomi.blog.service;
 
 
 
-import static com.namomi.blog.exception.BlogErrorCode.*;
 
 import java.util.List;
 
@@ -10,10 +9,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.namomi.blog.config.error.exception.ArticleNotFoundException;
 import com.namomi.blog.domain.Article;
 import com.namomi.blog.dto.AddArticleRequest;
 import com.namomi.blog.dto.UpdateArticleRequest;
-import com.namomi.blog.exception.CustomException;
+
 import com.namomi.blog.repository.BlogRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -76,6 +76,6 @@ public class BlogService {
 
     private Article getArticle(Long id) {
         return blogRepository.findById(id)
-                .orElseThrow(() -> new CustomException(BLOG_NOT_FOUND));
+            .orElseThrow(ArticleNotFoundException::new);
     }
 }
