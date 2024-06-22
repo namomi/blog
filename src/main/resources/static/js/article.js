@@ -70,7 +70,7 @@ if (createButton) {
 
 
 function redirectToHomePage() {
-    window.location.href = 'http://localhost:8080/articles';  // 홈 페이지 URL로 리다이렉트
+    window.location.href = '/articles';  // 홈 페이지 URL로 리다이렉트
 }
 
 // 버튼에 클릭 이벤트 리스너 등록
